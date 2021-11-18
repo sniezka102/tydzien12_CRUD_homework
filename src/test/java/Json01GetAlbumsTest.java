@@ -8,78 +8,62 @@ import java.util.List;
 
 import static io.restassured.RestAssured.given;
 
-public class Json01getAlbumsTest {
+public class Json01GetAlbumsTest {
     private final String BASE_URL = "https://jsonplaceholder.typicode.com";
-    private final String directory = "albums";
+    private final String DIRECTORY = "albums";
 
     @Test
-    public void jsongetalbumsREGULARAllRequest(){
+    public void jsonGetAlbumsRegularAllRequest() {
         Response response = given()
                 .when()
-                .get(BASE_URL + "/" + directory)
+                .get(BASE_URL + "/" + DIRECTORY)
                 .then()
                 .statusCode(HttpStatus.SC_OK)
                 .extract()
                 .response();
-
         JsonPath json = response.jsonPath();
         List<String> title = json.getList("title");
-
-        System.out.println(response.asString());
-
-        System.out.println("\nNumber of tiles in albums " + title.size() + "\n");
         Assertions.assertEquals(100, title.size());
-        System.out.println("Tiles: ");
-        title.stream()
-                .forEach(System.out::println);
     }
 
     @Test
-    public void jsongetalbumsREGULAROneRequest(){
+    public void jsonGetAlbumsRegularOneRequest() {
         Response response = given()
                 .when()
-                .get(BASE_URL + "/" + directory+"/1")
+                .get(BASE_URL + "/" + DIRECTORY + "/1")
                 .then()
                 .statusCode(HttpStatus.SC_OK)
                 .extract()
                 .response();
-
         JsonPath json = response.jsonPath();
-        System.out.println(response.asString());
-        Assertions.assertEquals("quidem molestiae enim",json.get("title"));
+        Assertions.assertEquals("quidem molestiae enim", json.get("title"));
     }
 
-
     @Test
-    public void jsongetalbumsPATHVARIABLESRequest(){
-
+    public void jsonGetAlbumsPATHVARIABLESRequest() {
         Response response = given()
                 .pathParam("id", 33)
                 .when()
-                .get(BASE_URL + "/" + directory + "/" + "{id}")
+                .get(BASE_URL + "/" + DIRECTORY + "/" + "{id}")
                 .then()
                 .statusCode(HttpStatus.SC_OK)
                 .extract()
                 .response();
         JsonPath json = response.jsonPath();
         Assertions.assertEquals("iste eos nostrum", json.get("title"));
-
     }
 
     @Test
-    public void jasongetalbumsQUERRYRequest(){
-
+    public void jasonGetAlbumsQueryRequest() {
         Response response = given()
-                .queryParam("title","iste eos nostrum")
+                .queryParam("title", "iste eos nostrum")
                 .when()
-                .get(BASE_URL + "/" + directory)
+                .get(BASE_URL + "/" + DIRECTORY)
                 .then()
                 .statusCode(HttpStatus.SC_OK)
                 .extract()
                 .response();
-
         JsonPath json = response.jsonPath();
         Assertions.assertEquals("iste eos nostrum", json.getList("title").get(0));
-
     }
 }

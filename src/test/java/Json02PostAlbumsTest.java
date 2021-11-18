@@ -8,51 +8,43 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-
 import static io.restassured.RestAssured.given;
 
 public class Json02PostAlbumsTest {
     private final String BASE_URL = "https://jsonplaceholder.typicode.com";
-    private final String directory = "albums";
+    private final String DIRECTORY = "albums";
     private static Faker faker;
     private String fakeTitle;
     private int fakeId;
 
     @BeforeAll
-    public static void methodBeforeAll(){
+    public static void methodBeforeAll() {
         faker = new Faker();
     }
 
     @BeforeEach
-    public void methodBeforeEach(){
+    public void methodBeforeEach() {
         fakeId = faker.number().randomDigit();
         fakeTitle = faker.lorem().sentence();
-
     }
 
     @Test
-    public void jsongetalbumsPOSTRequest(){
+    public void jsonGetAlbumsPostRequest() {
         JSONObject newAlbum = new JSONObject();
 
-        newAlbum.put("userId",fakeId);
+        newAlbum.put("userId", fakeId);
         newAlbum.put("title", fakeTitle);
 
         Response response = given()
                 .contentType("application/Json")
                 .body(newAlbum.toString())
                 .when()
-                .post(BASE_URL + "/" + directory + "/")
+                .post(BASE_URL + "/" + DIRECTORY + "/")
                 .then()
                 .statusCode(HttpStatus.SC_CREATED)
                 .extract()
                 .response();
-
-        System.out.println(response.asString());
-
         JsonPath json = response.jsonPath();
-        Assertions.assertEquals(fakeTitle,json.get("title"));
-
+        Assertions.assertEquals(fakeTitle, json.get("title"));
     }
-
-
 }
